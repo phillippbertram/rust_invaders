@@ -2,8 +2,8 @@ use std::time::Duration;
 
 use crate::{
     frame::{Drawable, Frame},
-    invaders::{Invader, Invaders},
-    shot::{self, Shot},
+    invaders::Invaders,
+    shot::Shot,
     NUM_COLS, NUM_ROWS,
 };
 
