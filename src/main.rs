@@ -1,4 +1,10 @@
-use std::{error::Error, io, sync::mpsc, thread, time::Duration};
+use std::{
+    error::Error,
+    io,
+    sync::mpsc,
+    thread,
+    time::{Duration, Instant},
+};
 
 use crossterm::{
     cursor::{Hide, Show},
@@ -46,9 +52,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     });
 
     let mut player = Player::new();
+    let mut instant = Instant::now();
 
     // Gameloop
     'gameloop: loop {
+        // delta
+        let delta = instant.elapsed();
+        instant = Instant::now();
+
         // per frame init
         let mut current_frame = new_frame();
 
@@ -64,6 +75,12 @@ fn main() -> Result<(), Box<dyn Error>> {
                         player.move_right();
                     }
 
+                    event::KeyCode::Char(' ') | event::KeyCode::Enter => {
+                        if player.shoot() {
+                            audio.play("pew");
+                        }
+                    }
+
                     event::KeyCode::Char('q') | event::KeyCode::Esc => {
                         audio.play("lose");
                         break 'gameloop;
@@ -72,6 +89,9 @@ fn main() -> Result<(), Box<dyn Error>> {
                 }
             }
         }
+
+        // Updates
+        player.update(delta);
 
         // Draw & Render
         player.draw(&mut current_frame);
