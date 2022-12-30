@@ -52,6 +52,14 @@ impl Invaders {
         false
     }
 
+    pub fn all_dead(&self) -> bool {
+        self.army.is_empty()
+    }
+
+    pub fn reached_bottom(&self) -> bool {
+        self.army.iter().any(|invader| invader.y == NUM_ROWS - 1)
+    }
+
     pub fn update(&mut self, delta: Duration) -> bool {
         self.move_timer.update(delta);
         if !self.move_timer.ready {
@@ -95,7 +103,7 @@ impl Drawable for Invaders {
     fn draw(&self, frame: &mut Vec<Vec<&str>>) {
         for invader in self.army.iter() {
             let invader_symbol = if self.move_timer.time_left.as_secs_f32() > 0.5 {
-                "x"
+                "X"
             } else {
                 "+"
             };
